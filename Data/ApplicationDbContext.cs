@@ -1,3 +1,4 @@
+using lmsApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace lmsApi.Data;
@@ -12,6 +13,10 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<BookCategory> Categories { get; set; }
+    public DbSet<Book> Books { get; set; }
+    public DbSet<BookCopy> BookCopies { get; set; }
+    public DbSet<IssuedBook> IssuedBooks { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

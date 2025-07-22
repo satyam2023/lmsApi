@@ -12,8 +12,8 @@ using lmsApi.Data;
 namespace lmsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250714123639_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250715121821_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

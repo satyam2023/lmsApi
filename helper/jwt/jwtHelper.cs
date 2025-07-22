@@ -62,4 +62,14 @@ public class JwtHelper
 
         return email ?? "";
     }
+
+    public static Guid ExtractUserIdFromToken(string token)
+{
+    var handler = new JwtSecurityTokenHandler();
+    var jwtToken = handler.ReadJwtToken(token);
+    var userIdStr = jwtToken?.Claims
+        .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid")?.Value;
+
+    return Guid.TryParse(userIdStr, out var userId) ? userId : Guid.Empty;
+}
 }

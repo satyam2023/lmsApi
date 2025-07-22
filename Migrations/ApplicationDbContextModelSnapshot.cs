@@ -71,7 +71,286 @@ namespace lmsApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_User_Email_Unique");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.Book", b =>
+                {
+                    b.Property<int>("BookId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BookId"));
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("ISBN")
+                        .HasMaxLength(20)
+                        .HasColumnType("VARCHAR(20)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("VARCHAR(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Publisher")
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("VARCHAR(200)");
+
+                    b.Property<int>("TotalCopies")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+
+                    b.HasKey("BookId");
+
+                    b.HasIndex("Title")
+                        .HasDatabaseName("IX_Book_Title");
+
+                    b.HasIndex("CategoryId", "IsActive")
+                        .HasDatabaseName("IX_Book_Category_Active");
+
+                    b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.BookCategory", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR(500)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("VARCHAR(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+
+                    b.HasKey("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Category_Name_Unique");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.BookCopy", b =>
+                {
+                    b.Property<int>("CopyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CopyId"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+
+                    b.HasKey("CopyId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("BookCopies");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.IssuedBook", b =>
+                {
+                    b.Property<int>("IssueId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IssueId"));
+
+                    b.Property<int>("CopyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime?>("ExtendedDate")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<int>("ExtensionCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Fine")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<decimal>("FinePaid")
+                        .HasColumnType("DECIMAL(10,2)");
+
+                    b.Property<bool>("IsExtended")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("IssuedBy")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("IssuedDate")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("VARCHAR(500)");
+
+                    b.Property<DateTime?>("ReturnDate")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("IssueId");
+
+                    b.HasIndex("CopyId");
+
+                    b.HasIndex("DueDate")
+                        .HasDatabaseName("IX_IssuedBook_DueDate");
+
+                    b.HasIndex("IssuedBy");
+
+                    b.HasIndex("UserId", "Status")
+                        .HasDatabaseName("IX_IssuedBook_User_Status");
+
+                    b.ToTable("IssuedBooks");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.Book", b =>
+                {
+                    b.HasOne("lmsApi.Models.Entities.BookCategory", "Category")
+                        .WithMany("Books")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.BookCopy", b =>
+                {
+                    b.HasOne("lmsApi.Models.Entities.Book", "Book")
+                        .WithMany("BookCopies")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.IssuedBook", b =>
+                {
+                    b.HasOne("lmsApi.Models.Entities.BookCopy", "BookCopy")
+                        .WithMany("IssuedBooks")
+                        .HasForeignKey("CopyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("User", "IssuedByUser")
+                        .WithMany()
+                        .HasForeignKey("IssuedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BookCopy");
+
+                    b.Navigation("IssuedByUser");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.Book", b =>
+                {
+                    b.Navigation("BookCopies");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.BookCategory", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("lmsApi.Models.Entities.BookCopy", b =>
+                {
+                    b.Navigation("IssuedBooks");
                 });
 #pragma warning restore 612, 618
         }

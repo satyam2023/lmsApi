@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/satyamsingh/Documents/dotNet/lmsApi/lmsApi/lmsApi.csproj": {}
+    "C:\\Users\\satyam.singh\\Documents\\dotnet\\lmsApi\\lmsApi.csproj": {}
   },
   "projects": {
-    "/Users/satyamsingh/Documents/dotNet/lmsApi/lmsApi/lmsApi.csproj": {
+    "C:\\Users\\satyam.singh\\Documents\\dotnet\\lmsApi\\lmsApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/satyamsingh/Documents/dotNet/lmsApi/lmsApi/lmsApi.csproj",
+        "projectUniqueName": "C:\\Users\\satyam.singh\\Documents\\dotnet\\lmsApi\\lmsApi.csproj",
         "projectName": "lmsApi",
-        "projectPath": "/Users/satyamsingh/Documents/dotNet/lmsApi/lmsApi/lmsApi.csproj",
-        "packagesPath": "/Users/satyamsingh/.nuget/packages/",
-        "outputPath": "/Users/satyamsingh/Documents/dotNet/lmsApi/lmsApi/obj/",
+        "projectPath": "C:\\Users\\satyam.singh\\Documents\\dotnet\\lmsApi\\lmsApi.csproj",
+        "packagesPath": "C:\\Users\\satyam.singh\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\satyam.singh\\Documents\\dotnet\\lmsApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/satyamsingh/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\satyam.singh\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -102,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
