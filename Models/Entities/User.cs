@@ -33,15 +33,11 @@ public class User
     [Required]
     [StringLength(20)]
     [Column(TypeName = "VARCHAR(20)")]
-    public string Role { get; set; } = "";
+    public Role Role { get; set; } = Role.User;
 
     [StringLength(500)]
     [Column(TypeName = "VARCHAR(500)")]
     public string RefreshToken { get; set; } = "";
-
-    [StringLength(500)]
-    [Column(TypeName = "VARCHAR(500)")]
-    public string AccessToken { get; set; } = "";
 
     [Column(TypeName = "DATETIME")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

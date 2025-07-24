@@ -18,10 +18,10 @@ public record UserDetail
     [Phone]
     [StringLength(15)]
     public string PhoneNumber { get; init; } = "";
-    
+
     [Required]
     [StringLength(20)]
-    public string Role { get; init; } = "";
+    public Role Role { get; init; } = Role.User;
     
     [StringLength(500)]
     public string AccessToken { get; init; } = "";

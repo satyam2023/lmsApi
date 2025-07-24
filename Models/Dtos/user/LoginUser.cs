@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace lmsApi.Models.Dtos.User;
 
-public record LoginUserDto
+public record LoginUser
 {
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress(ErrorMessage = "Please enter a valid email address")]

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using lmsApi.Attributes;
 
 [AtLeastOneProperty]
-public record UpdateUserDto
+public record UpdateUser
 {
     [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 100 characters")]
     public string? Name { get; init; }

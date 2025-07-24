@@ -8,9 +8,9 @@ using lmsApi.Helper.Jwt;
 
 public interface IUserService
 {
-    Task<ApiResponse<UserDetail>> CreateUser(CreateUserDto userDetail);
-    Task<ApiResponse<UserDetail>> LoginUser(LoginUserDto loginUser);
-    Task<ApiResponse<UserDetail>> UpdateUser(UpdateUserDto user, Guid id);
+    Task<ApiResponse<UserDetail>> CreateUser(CreateUser userDetail);
+    Task<ApiResponse<UserDetail>> LoginUser(LoginUser loginUser);
+    Task<ApiResponse<UserDetail>> UpdateUser(UpdateUser user, Guid id);
     Task<ApiResponse<RefreshTokenResponse>> RefreshToken(RefreshTokenRequest refreshTokenDto);
 }
 
@@ -27,7 +27,7 @@ public class UserService : IUserService
         _jwtHelper = jwtHelper;
     }
 
-    public async Task<ApiResponse<UserDetail>> CreateUser(CreateUserDto userDetail)
+    public async Task<ApiResponse<UserDetail>> CreateUser(CreateUser userDetail)
     {
         var isExist = await _context.Users.AnyAsync(u => u.Email == userDetail.Email);
         if (isExist)
@@ -45,7 +45,7 @@ public class UserService : IUserService
         userToAdd.Password = BCrypt.Net.BCrypt.HashPassword(userDetail.Password);
 
 
-        userToAdd.AccessToken = _jwtHelper.GenerateAccessToken(userToAdd);
+        var accessToken = _jwtHelper.GenerateAccessToken(userToAdd);
         userToAdd.RefreshToken = _jwtHelper.GenerateRefreshToken();
 
 
@@ -55,7 +55,7 @@ public class UserService : IUserService
         await _context.Users.AddAsync(userToAdd);
         await _context.SaveChangesAsync();
 
-        var result = _mapper.Map<UserDetail>(userToAdd);
+        var result = _mapper.Map<UserDetail>(userToAdd) with { AccessToken = accessToken };
         return new ApiResponse<UserDetail>
         {
             Data = result,
@@ -64,7 +64,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<ApiResponse<UserDetail>> LoginUser(LoginUserDto loginUser)
+    public async Task<ApiResponse<UserDetail>> LoginUser(LoginUser loginUser)
     {
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginUser.Email);
@@ -89,7 +89,7 @@ public class UserService : IUserService
         }
 
 
-        user.AccessToken = _jwtHelper.GenerateAccessToken(user);
+    string accessToken = _jwtHelper.GenerateAccessToken(user);
         user.RefreshToken = _jwtHelper.GenerateRefreshToken();
         user.UpdatedAt = DateTime.UtcNow;
 
@@ -97,7 +97,7 @@ public class UserService : IUserService
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
 
-        var result = _mapper.Map<UserDetail>(user);
+        var result = _mapper.Map<UserDetail>(user) with { AccessToken = accessToken };
         return new ApiResponse<UserDetail>
         {
             Data = result,
@@ -106,7 +106,7 @@ public class UserService : IUserService
         };
     }
     
-    public async Task<ApiResponse<UserDetail>> UpdateUser(UpdateUserDto user, Guid id)
+    public async Task<ApiResponse<UserDetail>> UpdateUser(UpdateUser user, Guid id)
     {
         Console.WriteLine($"Updating user with ID: {id}");
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -119,7 +119,6 @@ public class UserService : IUserService
             };
         }
 
-        // Only update fields that are provided (not null)
         if (!string.IsNullOrWhiteSpace(user.Name))
         {
             existingUser.Name = user.Name;
@@ -127,7 +126,6 @@ public class UserService : IUserService
 
         if (!string.IsNullOrWhiteSpace(user.Email))
         {
-            // Check if the new email is already taken by another user
             var emailExists = await _context.Users.AnyAsync(u => u.Email == user.Email && u.Id != id);
             if (emailExists)
             {
@@ -150,7 +148,7 @@ public class UserService : IUserService
         _context.Users.Update(existingUser);
         await _context.SaveChangesAsync();
 
-        var result = _mapper.Map<UserDetail>(existingUser);
+        var result = _mapper.Map<UserDetail>(existingUser) with { AccessToken = _jwtHelper.GenerateAccessToken(existingUser) };
         return new ApiResponse<UserDetail>
         {
             Data = result,
@@ -161,9 +159,7 @@ public class UserService : IUserService
 
     public async Task<ApiResponse<RefreshTokenResponse>> RefreshToken(RefreshTokenRequest refreshTokenDto)
     {
-
         var user =await _context.Users.FirstAsync(u => u.RefreshToken == refreshTokenDto.RefreshToken);
-
         if (user == null)
         {
             return new ApiResponse<RefreshTokenResponse>
@@ -179,7 +175,7 @@ public class UserService : IUserService
         {
             AccessToken = generateNewAccessToken,
             RefreshToken = user.RefreshToken,
-            ExpiresAt = DateTime.UtcNow.AddHours(1) 
+            ExpiresAt = DateTime.UtcNow.AddDays(1)
         };
         return new ApiResponse<RefreshTokenResponse>
         {

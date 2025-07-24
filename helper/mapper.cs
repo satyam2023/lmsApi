@@ -10,7 +10,7 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<CreateUserDto, User>().ReverseMap();
+        CreateMap<CreateUser, User>().ReverseMap();
         CreateMap<UserDetail, User>().ReverseMap();
         CreateMap<CreateBookDto, Book>();
         CreateMap<Book, BookDetailDto>().ReverseMap();

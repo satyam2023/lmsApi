@@ -7,34 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
     private readonly IUserService _userService;
-    public UserController(ApplicationDbContext context, IUserService userService)
+    public UserController( IUserService userService)
     {
-        _context = context;
         _userService = userService;
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto user)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUser user)
     {
-
         ApiResponse<UserDetail> response = await _userService.CreateUser(user);
         return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpPost("logIn")]
-    public async Task<IActionResult> LogInUser([FromBody] LoginUserDto loginUser)
+    public async Task<IActionResult> LogInUser([FromBody] LoginUser loginUser)
     {
-
         ApiResponse<UserDetail> response = await _userService.LoginUser(loginUser);
         return StatusCode((int)response.StatusCode, response);
     }
     
     [HttpPut("updateUser/{id}")]
-    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto user,[FromRoute] Guid id)
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUser user,[FromRoute] Guid id)
     {
-
         ApiResponse<UserDetail> response = await _userService.UpdateUser(user,id);
         return StatusCode((int)response.StatusCode, response);
     }
