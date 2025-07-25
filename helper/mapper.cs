@@ -17,5 +17,12 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateBookCopyDto, BookCopy>();
         CreateMap<BookCopy, BookCopyDetailDto>();
         CreateMap<IssueBookDto, IssuedBook>().ReverseMap();
+        CreateMap<CreateBookCategory, BookCategory>().ReverseMap();
+        CreateMap<BookCategory, BookCategoryDetail>().ReverseMap();
+        CreateMap<Book, BookCategoryResponse>().ReverseMap(); 
+        CreateMap<Book, BookDetailForCategory>()
+            .ForMember(dest => dest.AvailableCopies, opt => opt.MapFrom(src => src.AvailableCopies))
+            .ForMember(dest => dest.IssuedCopies, opt => opt.MapFrom(src => src.IssuedCopies))
+            .ForMember(dest => dest.HasAvailableCopies, opt => opt.MapFrom(src => src.HasAvailableCopies));
     }
 }

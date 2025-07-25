@@ -288,3 +288,5 @@ C:\Users\satyam.singh\Documents\dotnet\lmsApi\obj\Debug\net9.0\lmsApi.pdb
 C:\Users\satyam.singh\Documents\dotnet\lmsApi\obj\Debug\net9.0\lmsApi.genruntimeconfig.cache
 C:\Users\satyam.singh\Documents\dotnet\lmsApi\obj\Debug\net9.0\ref\lmsApi.dll
 C:\Users\satyam.singh\Documents\dotnet\lmsApi\bin\Debug\net9.0\lmsApi.staticwebassets.runtime.json
+C:\Users\satyam.singh\Documents\dotnet\lmsApi\obj\Debug\net9.0\lmsApi.RazorAssemblyInfo.cache
+C:\Users\satyam.singh\Documents\dotnet\lmsApi\obj\Debug\net9.0\lmsApi.RazorAssemblyInfo.cs

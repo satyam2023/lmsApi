@@ -30,7 +30,7 @@ public class BookCopy
 
  
     [NotMapped]
-    public bool IsCurrentlyIssued => IssuedBooks?.Any(ib => ib.ReturnDate == null) ?? false;
+    public bool IsCurrentlyIssued => this.IssuedBooks?.Any(ib => ib.ReturnDate == null) ?? false;
 
     [NotMapped]
     public IssuedBook? CurrentIssue => IssuedBooks?.FirstOrDefault(ib => ib.ReturnDate == null);
