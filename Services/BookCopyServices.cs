@@ -11,7 +11,7 @@ namespace lmsApi.Services;
 
 public interface IBookCopyServices
 {
-    Task<ApiResponse<string>> CreateBookCopy(CreateBookCopyDto createBookCopy);
+    Task<ApiResponse<string>> CreateBookCopy(CreateBookCopy createBookCopy);
     Task<ApiResponse<List<BookCopyDetailDto>>> GetBookCopiesByBookId(int bookId);
     Task<ApiResponse<BookCopyDetailDto>> UpdateBookCopy(int id, UpdateBookCopyDto updateBookCopy);
     Task<ApiResponse<bool>> DeleteBookCopy(int id);
@@ -28,7 +28,7 @@ public class BookCopyServices : IBookCopyServices
         _mapper = mapper;
     }
 
-    public async Task<ApiResponse<string>> CreateBookCopy(CreateBookCopyDto createBookCopy)
+    public async Task<ApiResponse<string>> CreateBookCopy(CreateBookCopy createBookCopy)
     {
 
         var book = await _context.Books.FindAsync(createBookCopy.BookId);

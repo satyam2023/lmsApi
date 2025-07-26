@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace lmsApi.Models.Entities;
 
-public class CreateBookDto
+public class CreateBook
 {
     [Required(ErrorMessage = "Title is required")]
     [StringLength(200, MinimumLength = 1, ErrorMessage = "Title must be between 1 and 200 characters")]

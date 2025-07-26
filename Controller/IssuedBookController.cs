@@ -17,20 +17,28 @@ public class IssuedBookController : ControllerBase
         _issuedBookService = issuedBookService;
     }
 
-    [HttpPost("issue")]
+    [HttpPost("issueBook")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> IssueBook([FromBody] IssueBookDto dto,[FromHeader(Name = "Authorization")] string authorization)
+    public async Task<IActionResult> IssueBook([FromBody] IssueBook dto, [FromHeader(Name = "Authorization")] string authorization)
     {
-         string token = authorization.Substring("Bearer ".Length).Trim();
+        string token = authorization.Substring("Bearer ".Length).Trim();
         var result = await _issuedBookService.IssueBook(dto, token);
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpPost("submit")]
-    public async Task<IActionResult> SubmitBook([FromBody] SubmitBookDto dto)
+    [Authorize(Roles = "Admin")]
+    [HttpPost("submitBook")]
+    public async Task<IActionResult> SubmitBook([FromBody] SubmitBook dto)
 
     {
         var result = await _issuedBookService.SubmitBook(dto);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [HttpPost("getIssuedBooksToUser")]
+    public async Task<IActionResult> GetIssuedBooksToUser([FromQuery] Guid userId)
+    {
+        var result = await _issuedBookService.GetIssuedBooksToUser(userId);
         return StatusCode(result.StatusCode, result);
     }
 }

@@ -1,6 +1,7 @@
 using ECommerceApp.ApiResponse;
 using lmsApi.Models.Dtos.BookCopy;
 using lmsApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace lmsApi.Controllers;
@@ -15,16 +16,16 @@ public class BookCopyController : ControllerBase
     {
         _bookCopyService = bookCopyService;
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost("addBookCopy")]
-    public async Task<IActionResult> AddBookCopy([FromBody] CreateBookCopyDto createBookCopy)
+    public async Task<IActionResult> AddBookCopy([FromBody] CreateBookCopy createBookCopy)
     {
 
         var response = await _bookCopyService.CreateBookCopy(createBookCopy);
         return StatusCode(response.StatusCode, response);
     }
 
-
+    [Authorize]
     [HttpGet("getBookCopiesByBookId")]
     public async Task<IActionResult> GetBookCopiesByBookId([FromQuery] int bookId)
     {
@@ -32,6 +33,7 @@ public class BookCopyController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("updateBookCopy/{id}")]
     public async Task<IActionResult> UpdateBookCopy(int id, [FromBody] UpdateBookCopyDto updateBookCopy)
     {
@@ -40,6 +42,7 @@ public class BookCopyController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("deleteBookCopy/{id}")]
     public async Task<IActionResult> DeleteBookCopy(int id)
     {

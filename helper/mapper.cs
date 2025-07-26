@@ -12,11 +12,11 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<CreateUser, User>().ReverseMap();
         CreateMap<UserDetail, User>().ReverseMap();
-        CreateMap<CreateBookDto, Book>();
+        CreateMap<CreateBook, Book>();
         CreateMap<Book, BookDetailDto>().ReverseMap();
-        CreateMap<CreateBookCopyDto, BookCopy>();
+        CreateMap<CreateBookCopy, BookCopy>();
         CreateMap<BookCopy, BookCopyDetailDto>();
-        CreateMap<IssueBookDto, IssuedBook>().ReverseMap();
+        CreateMap<IssueBook, IssuedBook>().ReverseMap();
         CreateMap<CreateBookCategory, BookCategory>().ReverseMap();
         CreateMap<BookCategory, BookCategoryDetail>().ReverseMap();
         CreateMap<Book, BookCategoryResponse>().ReverseMap(); 

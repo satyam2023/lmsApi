@@ -11,8 +11,10 @@ namespace lmsApi.Services;
 
 public interface IIssuedBookService
 {
-    Task<ApiResponse<string>> IssueBook(IssueBookDto dto, string token);
-    Task<ApiResponse<string>> SubmitBook(SubmitBookDto dto);
+    Task<ApiResponse<string>> IssueBook(IssueBook dto, string token);
+    Task<ApiResponse<string>> SubmitBook(SubmitBook dto);
+
+    Task<ApiResponse<List<IssuedBookDetailToUser>>> GetIssuedBooksToUser(Guid userId);
 }
 
 public class IssuedBookService : IIssuedBookService
@@ -26,7 +28,7 @@ public class IssuedBookService : IIssuedBookService
         _mapper = mapper;
     }
 
-    public async Task<ApiResponse<string>> IssueBook(IssueBookDto dto, string token)
+    public async Task<ApiResponse<string>> IssueBook(IssueBook dto, string token)
     {
         var bookCopy = await _context.BookCopies.FirstOrDefaultAsync(bc => bc.CopyId == dto.CopyId && bc.IsAvailable && bc.IsActive);
         if (bookCopy == null)
@@ -69,7 +71,7 @@ public class IssuedBookService : IIssuedBookService
         };
     }
 
-    public async Task<ApiResponse<string>> SubmitBook(SubmitBookDto dto)
+    public async Task<ApiResponse<string>> SubmitBook(SubmitBook dto)
     {
         var issuedBook = await _context.IssuedBooks
             .Include(ib => ib.BookCopy)
@@ -142,5 +144,40 @@ public class IssuedBookService : IIssuedBookService
         };
     }
 
+    public async Task<ApiResponse<List<IssuedBookDetailToUser>>> GetIssuedBooksToUser(Guid userId)
+    {
+        var issuedBooks = await _context.IssuedBooks
+    .Where(ib => ib.UserId == userId)
+    .Include(ib => ib.BookCopy)
+        .ThenInclude(bc => bc.Book)
+    .Select(ib => new IssuedBookDetailToUser
+    {
+        BookId = ib.BookCopy.BookId,
+        CopyId = ib.CopyId,
+        IssuedBy = ib.UserId,
+        BookTitle = ib.BookCopy.Book.Title,
+        AuthorName = ib.BookCopy.Book.Author,
+        IssueDate = ib.IssuedDate,
+        DueDate = ib.DueDate,
+        ReturnDate = ib.ReturnDate,
+        Status = ib.Status,
+        IssueId = ib.IssueId,
+    })
+    .ToListAsync();
+        if (issuedBooks.Count == 0)
+        {
+            return new ApiResponse<List<IssuedBookDetailToUser>>
+            {
+                StatusCode = AppStatusCode.NotFound,
+                Message = "No issued books found for this user"
+            };
+        }
+        return new ApiResponse<List<IssuedBookDetailToUser>>
+        {
+            StatusCode = AppStatusCode.Success,
+            Data = issuedBooks,
+            Message = "Issued books retrieved successfully"
+        };
+    }
 
 }

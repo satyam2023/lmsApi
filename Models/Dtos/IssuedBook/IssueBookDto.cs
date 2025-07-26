@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace lmsApi.Models.Dtos.IssuedBook;
 
-public class IssueBookDto
+public class IssueBook
 {
     [Required(ErrorMessage = "User ID is required")]
     public Guid UserId { get; set; }

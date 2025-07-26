@@ -4,6 +4,7 @@ using lmsApi.Models.Entities;
 using lmsApi.Models.Dtos.BookCategory;
 using lmsApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace lmsApi.Controllers;
 
@@ -18,6 +19,7 @@ public class BookCategoryController : ControllerBase
         _bookCategoryService = bookCategoryService;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("createBookCategory")]
     public async Task<IActionResult> CreateBookCategory([FromBody] CreateBookCategory category)
     {
@@ -25,6 +27,7 @@ public class BookCategoryController : ControllerBase
         var response = await _bookCategoryService.CreateBookCategory(category);
         return StatusCode(response.StatusCode, response);
     }
+
 
     [HttpGet("getAllCategories")]
     public async Task<IActionResult> GetAllCategories()
@@ -47,23 +50,15 @@ public class BookCategoryController : ControllerBase
         return StatusCode(response.StatusCode, response);
     }
 
+     [Authorize(Roles = "Admin")]
     [HttpPut("updateCategory/{id}")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateBookCategoryDto updateCategory)
     {
-        if (id <= 0)
-        {
-            return BadRequest("Invalid category ID");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var response = await _bookCategoryService.UpdateCategory(id, updateCategory);
         return StatusCode(response.StatusCode, response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("deleteCategory/{id}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
