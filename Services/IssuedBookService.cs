@@ -15,6 +15,7 @@ public interface IIssuedBookService
     Task<ApiResponse<string>> SubmitBook(SubmitBook dto);
 
     Task<ApiResponse<List<IssuedBookDetailToUser>>> GetIssuedBooksToUser(Guid userId);
+    Task<ApiResponse<string>> ExtendBookSubmissionDate(int issueId, DateOnly extendedDate);
 }
 
 public class IssuedBookService : IIssuedBookService
@@ -180,4 +181,48 @@ public class IssuedBookService : IIssuedBookService
         };
     }
 
+    public async Task<ApiResponse<string>> ExtendBookSubmissionDate(int issueId, DateOnly extendedDate)
+    {
+        var issuedBook = await _context.IssuedBooks
+            .FindAsync(issueId);
+
+            Console.WriteLine($"Extending submission date for IssueId: {issueId}, ExtendedDate: {extendedDate}");
+
+        if (issuedBook == null)
+        {
+            return new ApiResponse<string>
+            {
+                StatusCode = AppStatusCode.NotFound,
+                Message = "Issued book record not found",
+                Errors = new List<string> { "Invalid issue ID or book not currently issued" }
+            };
+        }
+
+        if (issuedBook.IsExtended || issuedBook.ExtensionCount >= 3)
+        {
+            return new ApiResponse<string>
+            {
+                StatusCode = AppStatusCode.BadRequest,
+                Message = "Book cannot be extended further",
+                Errors = new List<string> { "Maximum extension limit reached" }
+            };
+        }
+
+        issuedBook.ExtendedDate = extendedDate.ToDateTime(new TimeOnly(0, 0));
+        issuedBook.DueDate = issuedBook.ExtendedDate.Value;
+        issuedBook.IsExtended = true;
+        issuedBook.ExtensionCount++;
+        issuedBook.UpdatedAt = DateTime.UtcNow;
+
+        _context.IssuedBooks.Update(issuedBook);
+        await _context.SaveChangesAsync();
+
+        return new ApiResponse<string>
+        {
+            StatusCode = AppStatusCode.Success,
+            Data = $"Your book submission date has been extended to {issuedBook.DueDate}",
+            Message = "Book submission date extended successfully"
+        };
+
+    }
 }

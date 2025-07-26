@@ -41,4 +41,13 @@ public class IssuedBookController : ControllerBase
         var result = await _issuedBookService.GetIssuedBooksToUser(userId);
         return StatusCode(result.StatusCode, result);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("extendBookSubmissionDate/{issueId}")]
+    public async Task<IActionResult> ExtendBookSubmissionDate([FromRoute] int issueId, [FromQuery] DateOnly extendedDate)
+    {
+        Console.WriteLine($"Extending submission date for IssueId: {issueId}, ExtendedDate: {extendedDate}");
+        var result = await _issuedBookService.ExtendBookSubmissionDate(issueId, extendedDate);
+        return StatusCode(result.StatusCode, result);
+    }
 }
