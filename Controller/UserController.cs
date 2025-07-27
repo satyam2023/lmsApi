@@ -1,10 +1,10 @@
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using lmsApi.Data;
 using lmsApi.Models.Dtos.User;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("lmsApi/user")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;

@@ -1,6 +1,6 @@
 
 using AutoMapper;
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using lmsApi.Constants.AppStatusCode;
 using lmsApi.Data;
 using lmsApi.Models.Entities;
@@ -8,13 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 public interface IBookServices
 {
-   Task<ApiResponse<BookDetailDto>> CreateBook(CreateBook book);
-   Task<ApiResponse<BookDetailDto>> UpdateBookDetail(UpdateBookRequest updateBookDto,int bookId);
+    Task<ApiResponse<BookDetailDto>> CreateBook(CreateBook book);
+    Task<ApiResponse<BookDetailDto>> UpdateBookDetail(UpdateBookRequest updateBookDto, int bookId);
+    Task<ApiResponse<PaginatedResult<BookDetailDto>>> GetBooks(int pageNumber);
 }
 
 public class BookServices : IBookServices
 {
-        private readonly ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
     public BookServices(ApplicationDbContext context, IMapper mapper)
@@ -22,7 +23,7 @@ public class BookServices : IBookServices
         _context = context;
         _mapper = mapper;
     }
-  
+
     public async Task<ApiResponse<BookDetailDto>> CreateBook(CreateBook book)
     {
         var existingBook = await _context.Books
@@ -33,30 +34,28 @@ public class BookServices : IBookServices
             return new ApiResponse<BookDetailDto>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Book with this title and author already exists",
-                Errors = new List<string> { "Duplicate book entry" }
+                Error = "Book with this title and author already exists",
             };
         }
 
-    
+
         var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryId == book.CategoryId);
         if (!categoryExists)
         {
             return new ApiResponse<BookDetailDto>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Category not found",
-                Errors = new List<string> { "Invalid category ID" }
+                Error = "Invalid category ID",
             };
         }
 
-    
+
         Book bookToAdd = _mapper.Map<Book>(book);
         bookToAdd.TotalCopies = 0;
 
         await _context.Books.AddAsync(bookToAdd);
         await _context.SaveChangesAsync();
-        
+
         BookDetailDto bookResponse = _mapper.Map<BookDetailDto>(bookToAdd);
 
         return new ApiResponse<BookDetailDto>
@@ -66,7 +65,7 @@ public class BookServices : IBookServices
             Message = "Book created successfully"
         };
     }
-    public async Task<ApiResponse<BookDetailDto>> UpdateBookDetail(UpdateBookRequest updateBookDto,int bookId)
+    public async Task<ApiResponse<BookDetailDto>> UpdateBookDetail(UpdateBookRequest updateBookDto, int bookId)
     {
         var book = await _context.Books.FindAsync(bookId);
         if (book == null)
@@ -74,7 +73,7 @@ public class BookServices : IBookServices
             return new ApiResponse<BookDetailDto>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Book not found"
+                Error = "Book not found"
             };
         }
 
@@ -104,7 +103,7 @@ public class BookServices : IBookServices
             return new ApiResponse<BookDetailDto>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "At least one property (Title, Author, Publisher, ImageUrl) must be provided to update."
+                Error = "At least one property (Title, Author, Publisher, ImageUrl) must be provided to update."
             };
         }
         book.UpdatedAt = DateTime.UtcNow;
@@ -119,4 +118,45 @@ public class BookServices : IBookServices
             Message = "Book updated successfully"
         };
     }
+    
+   public async Task<ApiResponse<PaginatedResult<BookDetailDto>>> GetBooks(int pageNumber)
+{
+    const int pageSize = 10;
+
+    var totalRecords = await _context.Books.CountAsync();
+
+    var books = await _context.Books
+        .AsNoTracking()
+        .OrderBy(b => b.BookId)
+        .Skip((pageNumber - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
+    if (books == null || books.Count == 0)
+    {
+        return new ApiResponse<PaginatedResult<BookDetailDto>>
+        {
+            StatusCode = AppStatusCode.NotFound,
+            Error = "No books found"
+        };
+    }
+
+    var bookDtos = _mapper.Map<List<BookDetailDto>>(books);
+
+    var result = new PaginatedResult<BookDetailDto>
+    {
+        Items = bookDtos,
+        PageNumber = pageNumber,
+        PageSize = pageSize,
+        TotalRecords = totalRecords
+    };
+
+    return new ApiResponse<PaginatedResult<BookDetailDto>>
+    {
+        StatusCode = AppStatusCode.Success,
+        Data = result,
+        Message = "Books retrieved successfully"
+    };
+}
+
 }

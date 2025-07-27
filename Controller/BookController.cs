@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("lmsApi/book")]
 public class BookController : ControllerBase
 {
     private readonly IBookServices _bookServices;
@@ -29,4 +29,10 @@ public class BookController : ControllerBase
         return StatusCode((int)result.StatusCode, result);
     }
 
+    [HttpGet("getAllBooks")]
+    public async Task<IActionResult> GetAllBooks([FromQuery] int pageNumber = 1)
+    {
+        var result = await _bookServices.GetBooks(pageNumber);
+        return StatusCode((int)result.StatusCode, result);
+    }
 }

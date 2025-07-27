@@ -1,13 +1,13 @@
 using lmsApi.Models.Dtos.IssuedBook;
 using lmsApi.Services;
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace lmsApi.Controller;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("lmsApi/issued-books")]
 public class IssuedBookController : ControllerBase
 {
     private readonly IIssuedBookService _issuedBookService;
@@ -17,7 +17,7 @@ public class IssuedBookController : ControllerBase
         _issuedBookService = issuedBookService;
     }
 
-    [HttpPost("issueBook")]
+    [HttpPost("issue")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> IssueBook([FromBody] IssueBook dto, [FromHeader(Name = "Authorization")] string authorization)
     {
@@ -27,7 +27,7 @@ public class IssuedBookController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("submitBook")]
+    [HttpPost("submit")]
     public async Task<IActionResult> SubmitBook([FromBody] SubmitBook dto)
 
     {
@@ -35,7 +35,7 @@ public class IssuedBookController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpPost("getIssuedBooksToUser")]
+    [HttpPost("getIssuedBooks")]
     public async Task<IActionResult> GetIssuedBooksToUser([FromQuery] Guid userId)
     {
         var result = await _issuedBookService.GetIssuedBooksToUser(userId);
@@ -43,10 +43,9 @@ public class IssuedBookController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("extendBookSubmissionDate/{issueId}")]
+    [HttpPost("extendSubmissionDate/{issueId}")]
     public async Task<IActionResult> ExtendBookSubmissionDate([FromRoute] int issueId, [FromQuery] DateOnly extendedDate)
     {
-        Console.WriteLine($"Extending submission date for IssueId: {issueId}, ExtendedDate: {extendedDate}");
         var result = await _issuedBookService.ExtendBookSubmissionDate(issueId, extendedDate);
         return StatusCode(result.StatusCode, result);
     }

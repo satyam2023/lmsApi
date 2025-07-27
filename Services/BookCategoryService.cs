@@ -1,10 +1,10 @@
 using AutoMapper;
-using ECommerceApp.ApiResponse;
 using lmsApi.Constants.AppStatusCode;
 using lmsApi.Data;
 using lmsApi.Models.Entities;
 using lmsApi.Models.Dtos.BookCategory;
 using Microsoft.EntityFrameworkCore;
+using lmsApi.ApiResponse;
 
 namespace lmsApi.Services;
 
@@ -40,8 +40,7 @@ public class BookCategoryService : IBookCategoryService
             return new ApiResponse<BookCategoryDetail>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Category with this name already exists",
-                Errors = new List<string> { "Duplicate category name" }
+                Error = $"Category with this name {createCategory.Name} already exists"
             };
         }
 
@@ -64,7 +63,7 @@ public class BookCategoryService : IBookCategoryService
     public async Task<ApiResponse<List<BookCategoryDetail>>> GetAllCategories()
     {
 
-       List<BookCategory> categories = await _context.Categories
+       List<BookCategory> categories = await _context.Categories.AsNoTracking()
             .OrderBy(c => c.Name)
             .ToListAsync();
 
@@ -91,17 +90,18 @@ public class BookCategoryService : IBookCategoryService
             return new ApiResponse<BookCategoryResponse>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Category not found"
+                Error = "Category not found"
             };
         }
         
         BookCategoryResponse responseToSend=new BookCategoryResponse()
         {
-            CategoryId = category.CategoryId,   
+            CategoryId = category.CategoryId,
             Name = category.Name,
             Description = category.Description ?? "",
             ImageUrl = category.ImageUrl,
-            Books = _mapper.Map<List<BookDetailForCategory>>(category.Books)
+            Books = _mapper.Map<List<BookDetailForCategory>>(category.Books),
+            BookCount = category.Books.Count,
         };
 
         return new ApiResponse<BookCategoryResponse>
@@ -142,7 +142,7 @@ public class BookCategoryService : IBookCategoryService
             return new ApiResponse<BookCategoryDetail>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Category not found"
+                Error = "Category not found"
             };
         }
 
@@ -157,8 +157,8 @@ public class BookCategoryService : IBookCategoryService
                 return new ApiResponse<BookCategoryDetail>
                 {
                     StatusCode = AppStatusCode.BadRequest,
-                    Message = "Another category with this name already exists",
-                    Errors = new List<string> { "Duplicate category name" }
+                    Error = $"Category with name '{updateCategory.Name}' already exists",
+
                 };
             }
         }
@@ -215,7 +215,7 @@ public class BookCategoryService : IBookCategoryService
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Category not found"
+                Error = "Category not found"
             };
         }
 

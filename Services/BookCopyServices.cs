@@ -1,6 +1,6 @@
 
 using AutoMapper;
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using lmsApi.Constants.AppStatusCode;
 using lmsApi.Data;
 using lmsApi.Models.Entities;
@@ -37,8 +37,7 @@ public class BookCopyServices : IBookCopyServices
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Book not found",
-                Errors = new List<string> { "Invalid book ID" }
+                Error = "Invalid book ID",
             };
         }
 
@@ -48,8 +47,7 @@ public class BookCopyServices : IBookCopyServices
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Cannot add copy to an inactive book",
-                Errors = new List<string> { "Book is not active" }
+                Error= "Cannot add copy to an inactive book",
             };
         }
 
@@ -92,7 +90,7 @@ public class BookCopyServices : IBookCopyServices
             return new ApiResponse<List<BookCopyDetailDto>>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Book not found or has no active copies"
+                Error = "Book not found or has no active copies"
             };
         }
 
@@ -114,7 +112,7 @@ public class BookCopyServices : IBookCopyServices
             return new ApiResponse<BookCopyDetailDto>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Book copy not found"
+                Error = "Book copy not found"
             };
         }
 
@@ -154,7 +152,7 @@ public class BookCopyServices : IBookCopyServices
             return new ApiResponse<bool>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Book copy not found"
+                Error = "Book copy not found"
             };
         }
 

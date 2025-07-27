@@ -2,7 +2,7 @@ using lmsApi.Data;
 using lmsApi.Models.Entities;
 using lmsApi.Models.Dtos.IssuedBook;
 using lmsApi.Constants.AppStatusCode;
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using lmsApi.Helper.Jwt;
@@ -37,8 +37,7 @@ public class IssuedBookService : IIssuedBookService
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Book copy not available for issue",
-                Errors = new List<string> { "Invalid or unavailable copy ID" }
+                Error = "Book copy not available for issue",
             };
         }
 
@@ -48,13 +47,12 @@ public class IssuedBookService : IIssuedBookService
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Book copy is already issued",
-                Errors = new List<string> { "Copy is already issued" }
+                Error = "Book copy is already issued",
             };
         }
 
         Guid issuerId = JwtHelper.ExtractUserIdFromToken(token);
-        Console.WriteLine($"Processing issue for CopyId: {dto.CopyId}, IssuerId: {issuerId}");
+
         IssuedBook issuedBook = _mapper.Map<IssuedBook>(dto);
         issuedBook.IssuedBy = issuerId;
 
@@ -93,8 +91,8 @@ public class IssuedBookService : IIssuedBookService
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Book is not currently issued",
-                Errors = new List<string> { "Book is not in issued state" }
+                Error = "Book is not currently issued",
+
             };
         }
 
@@ -111,11 +109,10 @@ public class IssuedBookService : IIssuedBookService
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Fine not fully paid",
-                Errors = new List<string> {
+                Error =
                 $"Outstanding fine is {totalFineToBePaid - issuedBook.FinePaid}, " +
                 $"but only {dto.FinePaid} paid in this transaction"
-            }
+
             };
         }
 
@@ -170,7 +167,7 @@ public class IssuedBookService : IIssuedBookService
             return new ApiResponse<List<IssuedBookDetailToUser>>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "No issued books found for this user"
+                Error = "No issued books found for this user"
             };
         }
         return new ApiResponse<List<IssuedBookDetailToUser>>
@@ -186,15 +183,15 @@ public class IssuedBookService : IIssuedBookService
         var issuedBook = await _context.IssuedBooks
             .FindAsync(issueId);
 
-            Console.WriteLine($"Extending submission date for IssueId: {issueId}, ExtendedDate: {extendedDate}");
+
 
         if (issuedBook == null)
         {
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.NotFound,
-                Message = "Issued book record not found",
-                Errors = new List<string> { "Invalid issue ID or book not currently issued" }
+                Error = "Issued book record not found",
+
             };
         }
 
@@ -203,8 +200,8 @@ public class IssuedBookService : IIssuedBookService
             return new ApiResponse<string>
             {
                 StatusCode = AppStatusCode.BadRequest,
-                Message = "Book cannot be extended further",
-                Errors = new List<string> { "Maximum extension limit reached" }
+                Error = "Book cannot be extended further",
+
             };
         }
 

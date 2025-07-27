@@ -1,5 +1,5 @@
 
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using lmsApi.Models.Entities;
 using lmsApi.Models.Dtos.BookCategory;
 using lmsApi.Services;
@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace lmsApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("lmsApi/book-categories")]
 public class BookCategoryController : ControllerBase
 {
     private readonly IBookCategoryService _bookCategoryService;

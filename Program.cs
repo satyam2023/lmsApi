@@ -78,7 +78,7 @@ builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddSwaggerGen(opt =>
 {
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Library Management System", Version = "v1" });
     opt.AddSecurityDefinition(
         "Bearer",
         new OpenApiSecurityScheme

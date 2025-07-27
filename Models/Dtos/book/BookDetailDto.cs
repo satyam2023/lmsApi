@@ -1,4 +1,5 @@
 
+
 public record BookDetailDto
 {
     public int BookId { get; init; }

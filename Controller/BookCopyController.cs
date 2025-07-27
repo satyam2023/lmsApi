@@ -1,4 +1,4 @@
-using ECommerceApp.ApiResponse;
+using lmsApi.ApiResponse;
 using lmsApi.Models.Dtos.BookCopy;
 using lmsApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace lmsApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("lmsApi/book-copies")]
 public class BookCopyController : ControllerBase
 {
     private readonly IBookCopyServices _bookCopyService;
