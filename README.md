@@ -95,6 +95,7 @@ Retrieves a list of all books currently issued to a specific user.
 **Endpoint:** `POST /lmsApi/issued-books/extendSubmissionDate/{issueId}?extendedDate={date}`
 Allows a user to extend the due date for a book they have issued, up to three times, if eligible.
 
+## BookCategory Apis
 
 ### 1. Create Book Category
 **Endpoint:** `POST /lmsApi/book-categories/createBookCategory`
@@ -125,6 +126,7 @@ Removes a category from the system. If the category is associated with books, it
 **Endpoint:** `GET /lmsApi/book-categories/getActiveCategories`
 Retrieves a list of all active (enabled) categories for use in dropdowns or selection lists.
 
+## User APIs
 
 ### 1. User Registration (Sign Up)
 **Endpoint:** `POST /auth/register`
